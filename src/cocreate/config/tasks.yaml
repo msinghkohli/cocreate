@@ -1,0 +1,5 @@
+create_training_task:
+  description: >
+    Create contents for an online training on the {topic}
+  expected_output: >
+    Detailed course contents for an online training on {topic}. Expected output is in markdown format with multiple sections and each section having contents ranging between 100 and 500 words.
