@@ -532,6 +532,7 @@ dependencies = [
     { name = "langfuse" },
     { name = "openinference-instrumentation-crewai" },
     { name = "openinference-instrumentation-litellm" },
+    { name = "pydantic" },
 ]
 
 [package.metadata]
@@ -540,6 +541,7 @@ requires-dist = [
     { name = "langfuse", specifier = ">=3.2.1" },
     { name = "openinference-instrumentation-crewai", specifier = ">=0.1.11" },
     { name = "openinference-instrumentation-litellm", specifier = ">=0.1.24" },
+    { name = "pydantic", specifier = ">=2.11.7" },
 ]
 
 [[package]]

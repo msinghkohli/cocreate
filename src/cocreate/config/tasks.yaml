@@ -1,5 +1,20 @@
+# training_content_research:
+#   description: >
+#     Create outline of an online training on the {topic}.
+#   expected_output: >
+#     Bulleted list of training outline in markdown format
+#   agent: training_content_researcher
+
+# training_content_create:
+#   description: >
+#     Create detailed content of an online training on the {topic} based on the outline available. Each section of the outline should have content ranging from one paragraph to five paragraphs.
+#   expected_output: >
+#     Detailed training content in markdown format
+#   agent: training_content_creator
+
 create_training_task:
   description: >
-    Create contents for an online training on the {topic}
+    Create contents for an online training on the {topic}. For creating training, first the outline of contents needs to be made after researching on {topic}. After the outline has been researched, next would be to create detailed contents for each topic in the outline. Based on the contents, we will need to have a quiz containing 20 objective type question. Each question should have 4 options, with one valid answer.
   expected_output: >
-    Detailed course contents for an online training on {topic}. Expected output is in markdown format with multiple sections and each section having contents ranging between 100 and 500 words.
+    Detailed course contents for an online training on {topic}. Expected output is in markdown format with multiple sections and each section having contents ranging between 100 and 500 words. 
+  output_file: courseContents.md

@@ -2,6 +2,8 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
+from pydantic import BaseModel
+
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
@@ -17,11 +19,15 @@ class Cocreate():
     # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
     # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
     
+    class ResearchFindings(BaseModel):
+        outline_points: List[str]
+
     @agent
     def training_content_researcher(self) -> Agent:
         return Agent(
             config=self.agents_config['training_content_researcher'], # type: ignore[index]
             verbose=True
+            # response_format=self.ResearchFindings
         )
 
     @agent
@@ -30,10 +36,29 @@ class Cocreate():
             config=self.agents_config['training_content_creator'], # type: ignore[index]
             verbose=True
         )
+    
+    @agent
+    def training_quiz_creator(self) -> Agent:
+        return Agent(
+            config=self.agents_config['training_quiz_creator'], # type: ignore[index]
+            verbose=True
+        )
 
     # To learn more about structured task outputs,
     # task dependencies, and task callbacks, check out the documentation:
     # https://docs.crewai.com/concepts/tasks#overview-of-a-task
+    # @task
+    # def training_content_research(self) -> Task:
+    #     return Task(
+    #         config=self.tasks_config['training_content_research'], # type: ignore[index]
+    #     )
+    
+    # @task
+    # def training_content_create(self) -> Task:
+    #     return Task(
+    #         config=self.tasks_config['training_content_create'], # type: ignore[index]
+    #     )
+    
     @task
     def create_training_task(self) -> Task:
         return Task(
@@ -44,16 +69,11 @@ class Cocreate():
     def crew(self) -> Crew:
 
         # Define the manager agent
-        training_manager = Agent(
-            role="Training Manager for online training",
-            goal="Efficiently manage the crew and ensure high-quality creation of contents for an online course",
-            backstory="You're an experienced project manager, \
-                skilled in overseeing complex projects and guiding teams to success. \
-                Your role is to coordinate the efforts of the crew members, ensuring that \
-                each task is completed on time and to the highest standard. \
-                For any given task to create training for an online course, \
-                you first get a member research about the high level contents of the {topic} to identify multiple sub-topics. \
-                Then for those sub-topics, you have a member create content.",
+        project_manager = Agent(
+            role="Project Manager",
+            goal="Efficiently manage the crew and ensure high-quality task completion",
+            backstory="You're an experienced project manager, skilled in overseeing complex projects and guiding teams to success. \
+                Your role is to coordinate the efforts of the crew members, ensuring that each task is completed on time and to the highest standard.",
             allow_delegation=True,
             verbose=True
         )
@@ -65,7 +85,7 @@ class Cocreate():
         return Crew(
             agents=self.agents, # Automatically created by the @agent decorator
             tasks=self.tasks, # Automatically created by the @task decorator
-            manager_agent=training_manager,
+            manager_agent=project_manager,
             process=Process.hierarchical,
             verbose=True,
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
