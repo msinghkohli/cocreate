@@ -37,12 +37,15 @@ def run():
         Run the crew.
         """
         inputs = {
-            'topic': 'Quantum Computing',
+            'topic': 'Hatha Yoga',
             'current_year': str(datetime.now().year)
         }
         
         try:
-            Cocreate().crew().kickoff(inputs=inputs)
+            result=Cocreate().crew().kickoff(inputs=inputs)
+            print(result)
+            print("-------Structured Output-------")
+            print(result.pydantic)
         except Exception as e:
             raise Exception(f"An error occurred while running the crew: {e}")
     

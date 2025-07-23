@@ -1,8 +1,10 @@
+from cocreate.models import CourseContents
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
-from pydantic import BaseModel
+from crewai_tools import SerperDevTool
+
 
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -19,29 +21,29 @@ class Cocreate():
     # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
     # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
     
-    class ResearchFindings(BaseModel):
-        outline_points: List[str]
 
     @agent
     def training_content_researcher(self) -> Agent:
         return Agent(
             config=self.agents_config['training_content_researcher'], # type: ignore[index]
-            verbose=True
-            # response_format=self.ResearchFindings
+            verbose=True,
+            tools=[SerperDevTool()]
         )
 
     @agent
     def training_content_creator(self) -> Agent:
         return Agent(
             config=self.agents_config['training_content_creator'], # type: ignore[index]
-            verbose=True
+            verbose=True,
+            tools=[SerperDevTool()]
         )
     
     @agent
     def training_quiz_creator(self) -> Agent:
         return Agent(
             config=self.agents_config['training_quiz_creator'], # type: ignore[index]
-            verbose=True
+            verbose=True,
+            tools=[SerperDevTool()]
         )
 
     # To learn more about structured task outputs,
@@ -63,6 +65,7 @@ class Cocreate():
     def create_training_task(self) -> Task:
         return Task(
             config=self.tasks_config['create_training_task'], # type: ignore[index]
+            output_pydantic=CourseContents
         )
 
     @crew
@@ -88,5 +91,5 @@ class Cocreate():
             manager_agent=project_manager,
             process=Process.hierarchical,
             verbose=True,
-            # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
+            response_format=CourseContents
         )
