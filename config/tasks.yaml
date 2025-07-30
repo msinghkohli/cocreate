@@ -1,0 +1,35 @@
+# training_content_research:
+#   description: >
+#     Create outline of an online training on the {topic}.
+#   expected_output: >
+#     Bulleted list of training outline in markdown format
+#   agent: training_content_researcher
+
+# training_content_create:
+#   description: >
+#     Create detailed content of an online training on the {topic} based on the outline available. Each section of the outline should have content ranging from one paragraph to five paragraphs.
+#   expected_output: >
+#     Detailed training content in markdown format
+#   agent: training_content_creator
+
+# create_training_task:
+#   description: >
+#     Create contents for an online training on the {topic}. For creating training, first the outline of contents needs to be made after researching on {topic}. Outline of contents will have 3 to 10 modules. And each module will have its synopsis as well as multiple subtopics alongwith synopsis of each subtopic. There would need to be 2 to 5 subtopics. After the outline has been researched, next would be to create detailed contents for each subtopic identified in the outline. Contents for each subtopic should be between 200 and 400 words. Based on the detailed contents for each subtopic, we will need to create a quiz containing 3 to 7 objective type questions for each subtopic. Each question should have 4 options, with one valid answer, and explanation on why the answer is valid.
+#   expected_output: >
+#     Detailed course contents for an online training on {topic}. Expected output is structured JSON with list of modules for the training on {topic} represented as 'modules'. Each module will have 'title' representing module title, as well as 'synopsis' representing synopsis of the module. Each module will also have multiple 'subtopics'. Each subtopic will have 'title' representing subtopic title, as well as 'synopsis' representing synopsis of the subtopic along with detailed contents of each subtopic in the field 'contents'. Each subtopic would also have list of objective type questions with the field name 'questions'. Each question will have 'question', 4 options represented as 'options', with one valid answer represented as 'answer', and explanation on why the answer is valid represented as 'explanation'.
+#   output_file: createdCourse.json
+
+create_outline_task:
+  description: >
+    Create outline for an online training on the {topic}. Outline needs to be created after researching on {topic}. Outline of contents will have 3 to 10 modules. And each module will have its synopsis.
+  expected_output: >
+    Detailed course contents for an online training on {topic}. Expected output is structured JSON with list of modules for the training on {topic} represented as 'modules'. Each module will have 'title' representing module title, 'synopsis' representing synopsis of the module.
+  agent: training_content_researcher
+
+create_content_task:
+  description: >
+    Create content for an online training on the {topic}, based on the passed in module synopsis and title. Each module's content needs to be at least 100 words and maximum of 200 words
+  expected_output: >
+    Detailed course contents for an online training on {topic}. Expected output is structured JSON with list of modules for the training on {topic} represented as 'modules'. Each module will have 'title' representing module title, 'synopsis' representing synopsis of the module, along with detailed contents of each subtopic in the field 'contents'.
+  agent: training_content_creator
+  # context: create_outline_task
